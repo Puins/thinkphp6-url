@@ -5,6 +5,6 @@
 ## 安装
 
 ~~~
-composer require puins/thinkphp6-url:dev-main
+composer require puins/thinkphp6-url:dev-master
 ~~~
 
