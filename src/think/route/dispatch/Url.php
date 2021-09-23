@@ -8,15 +8,15 @@
 // +----------------------------------------------------------------------
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
-declare(strict_types=1);
+declare (strict_types = 1);
 
 namespace think\route\dispatch;
 
 use think\exception\HttpException;
 use think\helper\Str;
 use think\Request;
-use think\route\Rule;
 use think\route\dispatch\Controller;
+use think\route\Rule;
 
 /**
  * Url Dispatcher
@@ -35,7 +35,7 @@ class Url extends Controller
     public function __construct(Request $request, Rule $rule, $dispatch)
     {
         $this->request = $request;
-        $this->rule    = $rule;
+        $this->rule = $rule;
 
         if (!is_null($this->rule->config('controller_auto_search'))) {
             $this->config['controller_auto_search'] = $this->rule->config('controller_auto_search');
@@ -71,8 +71,7 @@ class Url extends Controller
 
         // 解析控制器
         if ($this->config['controller_auto_search']) {
-            $app = app('http')->getName();
-            $controller = $this->autoFindController($app, $path);
+            $controller = $this->autoFindController($path);
         } else {
             $controller = !empty($path) ? array_shift($path) : null;
         }
@@ -83,7 +82,7 @@ class Url extends Controller
 
         // 解析操作
         $action = !empty($path) ? array_shift($path) : null;
-        $var    = [];
+        $var = [];
 
         // 解析额外参数
         if ($path) {
@@ -124,7 +123,7 @@ class Url extends Controller
         // 检查地址是否被定义过路由
         $name = strtolower(Str::studly($controller) . '/' . $action);
 
-        $host   = $this->request->host(true);
+        $host = $this->request->host(true);
         $method = $this->request->method();
 
         if ($this->rule->getRouter()->getName($name, $host, $method)) {
@@ -137,13 +136,12 @@ class Url extends Controller
     /**
      * 自动定位控制器类
      * @access protected
-     * @param  string    $app 应用名
      * @param  array     $path   URL
      * @return string
      */
-    protected function autoFindController($app, &$path)
+    protected function autoFindController(&$path)
     {
-        $dir    = app()->getAppPath() .  $this->rule->config('controller_layer');
+        $dir = app()->getAppPath() . $this->rule->config('controller_layer');
         $suffix = $this->rule->config('controller_suffix') ? ucfirst($this->rule->config('controller_layer')) : '';
 
         $item = [];
@@ -151,8 +149,8 @@ class Url extends Controller
 
         foreach ($path as $val) {
             $item[] = $val;
-            $file   = $dir . '/' . str_replace('.', '/', $val) . $suffix . '.php';
-            $file   = pathinfo($file, PATHINFO_DIRNAME) . '/' . parse_name(pathinfo($file, PATHINFO_FILENAME), 1) . '.php';
+            $file = $dir . '/' . str_replace('.', '/', $val) . $suffix . '.php';
+            $file = pathinfo($file, PATHINFO_DIRNAME) . '/' . parse_name(pathinfo($file, PATHINFO_FILENAME), 1) . '.php';
             if (is_file($file)) {
                 $find = true;
                 break;
@@ -163,7 +161,7 @@ class Url extends Controller
 
         if ($find) {
             $controller = implode('.', $item);
-            $path       = array_slice($path, count($item));
+            $path = array_slice($path, count($item));
         } else {
             $controller = array_shift($path);
         }
